@@ -44,6 +44,10 @@ app.use("/api", apiLimiter);
 app.use(express.json({ limit: "10kb" }));
 app.use(cookieParser());
 
+app.get("/", (_req, res) => {
+  res.status(200).json({ success: true, message: "Lumora API is live" });
+});
+
 // 5. Health Check Route
 app.get("/api/health", (_req, res) => {
   res.status(200).json({ success: true, message: "Lumora API is secure and running" });
