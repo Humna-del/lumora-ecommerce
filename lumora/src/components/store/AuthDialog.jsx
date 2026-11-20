@@ -23,8 +23,12 @@ export default function AuthDialog({
   const [loading, setLoading] = useState(false);
   const [orders, setOrders] = useState([]);
 
+  const handleOpenChange = (nextOpen) => {
+    if (nextOpen) setError("");
+    onOpenChange(nextOpen);
+  };
+
   useEffect(() => {
-    setError("");
     if (open && user) {
       apiFetch("/orders/my")
         .then((data) => setOrders(data.orders || []))
@@ -65,7 +69,7 @@ export default function AuthDialog({
   };
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
+    <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogContent className="sm:max-w-[440px] bg-[#FFFEF2] text-[#252525] rounded-none border-[#D4CFC4] p-8">
         {user ? (
           /* ---------------- LOGGED-IN ACCOUNT VIEW ---------------- */

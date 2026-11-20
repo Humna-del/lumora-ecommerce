@@ -21,8 +21,10 @@ export default function CheckoutPage({
   const [deliveryMethod, setDeliveryMethod] = useState(
     checkoutMeta?.deliveryMethod || "delivery"
   );
-  const [customerName, setCustomerName] = useState(user?.name || "");
-  const [customerEmail, setCustomerEmail] = useState(user?.email || "");
+  const [customerName, setCustomerName] = useState(null);
+  const [customerEmail, setCustomerEmail] = useState(null);
+  const customerNameValue = customerName ?? user?.name ?? "";
+  const customerEmailValue = customerEmail ?? user?.email ?? "";
   const [street, setStreet] = useState("");
   const [city, setCity] = useState("");
   const [country, setCountry] = useState("Pakistan");
@@ -36,13 +38,6 @@ export default function CheckoutPage({
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
-
-  useEffect(() => {
-    if (user) {
-      setCustomerName((prev) => prev || user.name);
-      setCustomerEmail((prev) => prev || user.email);
-    }
-  }, [user]);
 
   const subtotal = cart.reduce(
     (sum, item) => sum + item.price * item.quantity,
@@ -104,8 +99,8 @@ export default function CheckoutPage({
 
     try {
       const payload = {
-        customerName,
-        customerEmail,
+        customerName: customerNameValue,
+        customerEmail: customerEmailValue,
         deliveryMethod,
         shippingAddress:
           deliveryMethod === "delivery"
@@ -141,9 +136,9 @@ export default function CheckoutPage({
   };
 
   return (
-    <main className="min-h-screen bg-[#FFFEF2] text-[#252525] py-10">
-      <div className="max-w-[1280px] mx-auto px-6 lg:px-12">
-        <div className="flex items-center justify-between pb-6 mb-10 border-b border-[#E2DDD2]">
+    <main className="min-h-screen bg-[#FFFEF2] text-[#252525] py-6 sm:py-10">
+      <div className="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-12">
+        <div className="flex flex-wrap items-center justify-between gap-3 pb-5 sm:pb-6 mb-7 sm:mb-10 border-b border-[#E2DDD2]">
           <h1 className="font-serif text-3xl md:text-4xl font-normal">
             Checkout
           </h1>
@@ -155,12 +150,12 @@ export default function CheckoutPage({
 
         <form
           onSubmit={handlePlaceOrder}
-          className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start"
+          className="grid grid-cols-1 lg:grid-cols-12 gap-6 sm:gap-12 items-start"
         >
           {/* LEFT 7 COLS: Delivery + Payment */}
           <div className="lg:col-span-7 space-y-8">
             {/* 1. Delivery Method */}
-            <section className="bg-white border border-[#EAE6DC] p-6 space-y-5">
+            <section className="bg-white border border-[#EAE6DC] p-4 sm:p-6 space-y-5">
               <h2 className="text-[16px] font-medium">1. Delivery method</h2>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -206,7 +201,7 @@ export default function CheckoutPage({
                   type="text"
                   required
                   placeholder="Full name*"
-                  value={customerName}
+                  value={customerNameValue}
                   onChange={(e) => setCustomerName(e.target.value)}
                   className="border border-[#D4CFC4] px-3.5 py-2.5 text-[13px] focus:outline-none focus:border-[#252525]"
                 />
@@ -214,7 +209,7 @@ export default function CheckoutPage({
                   type="email"
                   required
                   placeholder="Email address*"
-                  value={customerEmail}
+                  value={customerEmailValue}
                   onChange={(e) => setCustomerEmail(e.target.value)}
                   className="border border-[#D4CFC4] px-3.5 py-2.5 text-[13px] focus:outline-none focus:border-[#252525]"
                 />
@@ -277,7 +272,7 @@ export default function CheckoutPage({
             </section>
 
             {/* 2. Payment Method */}
-            <section className="bg-white border border-[#EAE6DC] p-6 space-y-5">
+            <section className="bg-white border border-[#EAE6DC] p-4 sm:p-6 space-y-5">
               <h2 className="text-[16px] font-medium">2. Payment method</h2>
 
               <div className="space-y-3">
@@ -363,7 +358,7 @@ export default function CheckoutPage({
           </div>
 
           {/* RIGHT 5 COLS: Order Summary */}
-          <aside className="lg:col-span-5 bg-white border border-[#EAE6DC] p-6 space-y-5">
+          <aside className="lg:col-span-5 bg-white border border-[#EAE6DC] p-4 sm:p-6 space-y-5">
             <h2 className="text-[18px] font-medium">Order Summary</h2>
 
             <div className="divide-y divide-[#EAE6DC]">

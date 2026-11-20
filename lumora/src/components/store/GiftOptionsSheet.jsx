@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { X } from "lucide-react";
 import { Sheet, SheetContent, SheetTitle } from "@/components/ui/sheet";
 
@@ -8,29 +8,25 @@ export default function GiftOptionsSheet({
   giftOptions,
   onApply,
 }) {
-  const [bagSelected, setBagSelected] = useState(giftOptions.bagSelected);
-  const [addMessage, setAddMessage] = useState(giftOptions.addMessage);
-  const [message, setMessage] = useState(giftOptions.message);
+  const [draft, setDraft] = useState(null);
+  const options = draft ?? giftOptions;
 
-  useEffect(() => {
-    if (open) {
-      setBagSelected(giftOptions.bagSelected);
-      setAddMessage(giftOptions.addMessage);
-      setMessage(giftOptions.message);
-    }
-  }, [open, giftOptions]);
+  const handleOpenChange = (nextOpen) => {
+    if (!nextOpen) setDraft(null);
+    onOpenChange(nextOpen);
+  };
 
   const handleApply = () => {
     onApply({
-      bagSelected,
-      addMessage,
-      message: addMessage ? message.trim() : "",
+      bagSelected: options.bagSelected,
+      addMessage: options.addMessage,
+      message: options.addMessage ? options.message.trim() : "",
     });
-    onOpenChange(false);
+    handleOpenChange(false);
   };
 
   return (
-    <Sheet open={open} onOpenChange={onOpenChange}>
+    <Sheet open={open} onOpenChange={handleOpenChange}>
       <SheetContent
         side="right"
         showCloseButton={false}
@@ -58,8 +54,13 @@ export default function GiftOptionsSheet({
             <div className="flex items-center gap-3">
               <input
                 type="checkbox"
-                checked={bagSelected}
-                onChange={(e) => setBagSelected(e.target.checked)}
+                checked={options.bagSelected}
+                onChange={(e) =>
+                  setDraft((prev) => ({
+                    ...(prev ?? giftOptions),
+                    bagSelected: e.target.checked,
+                  }))
+                }
                 className="w-4 h-4 accent-[#252525] cursor-pointer"
               />
               <div className="w-10 h-10 bg-[#F7F5EE] overflow-hidden shrink-0">
@@ -80,8 +81,13 @@ export default function GiftOptionsSheet({
               <div className="flex items-center gap-3">
                 <input
                   type="checkbox"
-                  checked={addMessage}
-                  onChange={(e) => setAddMessage(e.target.checked)}
+                  checked={options.addMessage}
+                  onChange={(e) =>
+                    setDraft((prev) => ({
+                      ...(prev ?? giftOptions),
+                      addMessage: e.target.checked,
+                    }))
+                  }
                   className="w-4 h-4 accent-[#252525] cursor-pointer"
                 />
                 <span className="text-[13px]">Add a message</span>
@@ -89,12 +95,17 @@ export default function GiftOptionsSheet({
               <span className="text-[13px] text-[#57534E]">Free</span>
             </label>
 
-            {addMessage && (
+            {options.addMessage && (
               <textarea
                 rows={3}
                 maxLength={200}
-                value={message}
-                onChange={(e) => setMessage(e.target.value)}
+                value={options.message}
+                onChange={(e) =>
+                  setDraft((prev) => ({
+                    ...(prev ?? giftOptions),
+                    message: e.target.value,
+                  }))
+                }
                 placeholder="Write a personal note for the recipient..."
                 className="w-full border border-[#D4CFC4] p-3 text-[13px] focus:outline-none focus:border-[#252525]"
               />

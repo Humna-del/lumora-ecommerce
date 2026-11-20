@@ -123,10 +123,10 @@ export default function CartPage({
     .join(" + ");
 
   return (
-    <main className="min-h-screen bg-[#FFFEF2] text-[#252525] py-8">
-      <div className="max-w-[1440px] mx-auto px-6 lg:px-12">
+    <main className="min-h-screen bg-[#FFFEF2] text-[#252525] py-6 sm:py-8">
+      <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-12">
         {/* Top Notice Banner */}
-        <div className="bg-[#F6F5E4] px-4 py-3 mb-10 flex items-center justify-center gap-3 text-[13px] text-[#252525]">
+        <div className="bg-[#F6F5E4] px-3 sm:px-4 py-3 mb-8 sm:mb-10 flex items-center justify-center gap-3 text-[12px] sm:text-[13px] text-[#252525]">
           <Info className="w-4 h-4 shrink-0" />
           <p>
             A fleeting 15% reduction in The Lumora Gift Gathering using code{" "}
@@ -145,11 +145,11 @@ export default function CartPage({
         </div>
 
         {/* 2-Column Main Cart Layout */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-start">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 sm:gap-10 items-start">
           {/* LEFT 8 COLUMNS */}
           <div className="lg:col-span-8 space-y-6">
             {/* 1. Complimentary Samples Accordion */}
-            <div className="bg-white border border-[#EAE6DC] p-6">
+            <div className="bg-white border border-[#EAE6DC] p-4 sm:p-6">
               <button
                 type="button"
                 onClick={() => setSamplesOpen((p) => !p)}
@@ -264,7 +264,7 @@ export default function CartPage({
             ) : (
               <div className="bg-white border border-[#EAE6DC] divide-y divide-[#EAE6DC]">
                 {cart.map((item) => (
-                  <div key={item.cartKey} className="p-6 flex gap-5">
+                  <div key={item.cartKey} className="p-4 sm:p-6 flex gap-3 sm:gap-5">
                     <button
                       type="button"
                       onClick={() => navigate(`/product/${item._id}`)}
@@ -287,7 +287,7 @@ export default function CartPage({
                           >
                             {item.name}
                           </button>
-                          <p className="text-[13px] text-[#66635B] mt-0.5">
+                          <p className="text-[13px] text-[#66635B] mt-0.5 line-clamp-2">
                             {item.description}
                           </p>
                         </div>
@@ -370,7 +370,7 @@ export default function CartPage({
           </div>
 
           {/* RIGHT 4 COLUMNS: Order Summary */}
-          <aside className="lg:col-span-4 bg-white border border-[#EAE6DC] p-6 space-y-5">
+          <aside className="lg:col-span-4 bg-white border border-[#EAE6DC] p-4 sm:p-6 space-y-5">
             <h2 className="text-[18px] font-medium">Order summary</h2>
 
             <div className="space-y-3 text-[13px] pb-4 border-b border-[#EAE6DC]">

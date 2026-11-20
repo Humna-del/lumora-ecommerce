@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { ChevronDown, ChevronUp, X, ArrowRight } from "lucide-react";
 import {
   Sheet,
@@ -14,12 +14,15 @@ export default function FilterDrawer({
   filterOptions,
   onApply,
 }) {
-  const [draft, setDraft] = useState(appliedFilters);
+  const [draft, setDraft] = useState(null);
   const [openSections, setOpenSections] = useState({ price: true, skinType: true });
 
-  useEffect(() => {
-    if (open) setDraft(appliedFilters);
-  }, [open, appliedFilters]);
+  const filters = draft ?? appliedFilters;
+
+  const handleOpenChange = (nextOpen) => {
+    if (!nextOpen) setDraft(null);
+    onOpenChange(nextOpen);
+  };
 
   const toggleSection = (key) => {
     setOpenSections((prev) => ({ ...prev, [key]: !prev[key] }));
@@ -27,18 +30,19 @@ export default function FilterDrawer({
 
   const toggleOption = (key, value) => {
     setDraft((prev) => {
-      const exists = prev[key].includes(value);
+      const current = prev ?? appliedFilters;
+      const exists = current[key].includes(value);
       return {
-        ...prev,
+        ...current,
         [key]: exists
-          ? prev[key].filter((v) => v !== value)
-          : [...prev[key], value],
+          ? current[key].filter((v) => v !== value)
+          : [...current[key], value],
       };
     });
   };
 
   return (
-    <Sheet open={open} onOpenChange={onOpenChange}>
+    <Sheet open={open} onOpenChange={handleOpenChange}>
       <SheetContent
         side="left"
         showCloseButton={false}
@@ -80,10 +84,10 @@ export default function FilterDrawer({
                   type="range"
                   min={0}
                   max={300}
-                  value={draft.maxPrice}
+                  value={filters.maxPrice}
                   onChange={(e) =>
                     setDraft((prev) => ({
-                      ...prev,
+                      ...(prev ?? appliedFilters),
                       maxPrice: Number(e.target.value),
                     }))
                   }
@@ -95,10 +99,10 @@ export default function FilterDrawer({
                     <input
                       type="number"
                       min={0}
-                      value={draft.minPrice}
+                      value={filters.minPrice}
                       onChange={(e) =>
                         setDraft((prev) => ({
-                          ...prev,
+                          ...(prev ?? appliedFilters),
                           minPrice: Number(e.target.value) || 0,
                         }))
                       }
@@ -111,10 +115,10 @@ export default function FilterDrawer({
                     <input
                       type="number"
                       min={0}
-                      value={draft.maxPrice}
+                      value={filters.maxPrice}
                       onChange={(e) =>
                         setDraft((prev) => ({
-                          ...prev,
+                          ...(prev ?? appliedFilters),
                           maxPrice: Number(e.target.value) || 0,
                         }))
                       }
@@ -148,7 +152,7 @@ export default function FilterDrawer({
                 {isOpen && (
                   <div className="pt-4 flex flex-wrap gap-2">
                     {opts.map(({ value, count }) => {
-                      const active = draft[section.key].includes(value);
+                      const active = filters[section.key].includes(value);
                       return (
                         <button
                           key={value}
@@ -184,8 +188,8 @@ export default function FilterDrawer({
           <button
             type="button"
             onClick={() => {
-              onApply(draft);
-              onOpenChange(false);
+              onApply(filters);
+              handleOpenChange(false);
             }}
             className="inline-flex items-center gap-3 bg-[#333333] hover:bg-[#1A1A1A] text-white px-7 py-3 text-[12px] font-medium uppercase tracking-wider cursor-pointer"
           >

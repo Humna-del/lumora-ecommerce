@@ -172,7 +172,7 @@ function App() {
                   title="An end to aimless searching"
                   description="Should you be feeling lost in your efforts to find a suitable present, simply answer a few questions and our guide will point the way."
                   ctaText="Consult The Gift Finder"
-                  image="/images/split-gift.jpg"
+                  image="/photos/split-gift.jpg"
                   imagePosition="right"
                   bgClass="bg-[#DFDCD2]"
                   onCtaClick={() => navigate("/category/gifts")}
@@ -195,7 +195,7 @@ function App() {
                   title="A time to embrace"
                   description="Heading home for the quiet season—with armfuls of aromatic gifts to bestow upon cherished recipients. Explore our seasonal stories and find the perfect present."
                   ctaText="Read more"
-                  image="/images/split-journal.jpg"
+                  image="/photos/split-journal.jpg"
                   imagePosition="left"
                   bgClass="bg-[#DFDCD2]"
                   onCtaClick={() => navigate("/category/all")}

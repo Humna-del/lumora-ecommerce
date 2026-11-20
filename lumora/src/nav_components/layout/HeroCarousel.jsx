@@ -20,7 +20,7 @@ export default function HeroCarousel() {
   const activeSlide = heroSlides[currentIndex];
 
   return (
-    <section className="relative h-[88vh] min-h-[560px] w-full overflow-hidden bg-[#252525]">
+    <section className="relative h-[82svh] min-h-[480px] max-h-[900px] w-full overflow-hidden bg-[#252525] md:h-[88vh] md:min-h-[560px]">
       {/* Render ALL slides stacked, crossfading opacity smoothly */}
       {heroSlides.map((slide, index) => {
         const isActive = index === currentIndex;
@@ -77,23 +77,23 @@ export default function HeroCarousel() {
       {/* Bottom Centered Text (fades smoothly via key on text block) */}
       <div
         key={activeSlide.id}
-        className="absolute bottom-12 md:bottom-16 left-1/2 -translate-x-1/2 z-20 w-full max-w-2xl px-6 text-center text-white animate-in fade-in duration-700"
+        className="absolute bottom-8 sm:bottom-12 md:bottom-16 left-1/2 -translate-x-1/2 z-20 w-full max-w-2xl px-5 sm:px-6 text-center text-white animate-in fade-in duration-700"
       >
         <p className="text-xs md:text-sm tracking-wide mb-2.5 text-white/90">
           {activeSlide.eyebrow}
         </p>
 
-        <h1 className="font-serif text-4xl md:text-5xl lg:text-[52px] font-normal leading-tight mb-4">
+        <h1 className="font-serif text-3xl sm:text-4xl md:text-5xl lg:text-[52px] font-normal leading-tight mb-3 sm:mb-4">
           {activeSlide.title}
         </h1>
 
-        <p className="text-sm md:text-base font-light text-white/90 mb-7">
+        <p className="text-[13px] sm:text-sm md:text-base font-light text-white/90 mb-5 sm:mb-7">
           {activeSlide.subtitle}
         </p>
 
         <button
           type="button"
-          className="inline-flex items-center justify-center gap-8 border border-white/80 px-10 py-3.5 text-sm font-medium text-white hover:bg-white hover:text-[#252525] transition-colors duration-300 cursor-pointer"
+          className="inline-flex items-center justify-center gap-5 sm:gap-8 border border-white/80 px-6 sm:px-10 py-3.5 text-sm font-medium text-white hover:bg-white hover:text-[#252525] transition-colors duration-300 cursor-pointer"
         >
           <span>{activeSlide.ctaText}</span>
           <ArrowRight className="w-4 h-4 stroke-[1.5]" />

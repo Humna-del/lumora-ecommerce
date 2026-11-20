@@ -4,6 +4,7 @@ import { Search, Menu, X } from "lucide-react";
 import { NAVIGATION_ITEMS } from "@/data/navigation";
 import MegaMenu from "@/nav_components/layout/MegaMenu";
 import SearchPanel from "@/nav_components/layout/SearchPanel";
+import { Sheet, SheetContent, SheetTitle } from "@/components/ui/sheet";
 
 export default function Navbar({
   cartCount = 0,
@@ -16,6 +17,8 @@ export default function Navbar({
   const navigate = useNavigate();
   const [isHovered, setIsHovered] = useState(false);
   const [activeMenu, setActiveMenu] = useState(null);
+  const [mobileMenuCategory, setMobileMenuCategory] = useState(null);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
 
   // Navbar stays white if hovered, a MegaMenu is open, OR Search is open
@@ -48,6 +51,7 @@ export default function Navbar({
         ? "all"
         : slug;
     setActiveMenu(null);
+    setIsMobileMenuOpen(false);
     navigate(`/category/${categorySlug}`);
   };
 
@@ -67,8 +71,13 @@ export default function Navbar({
       }`}
     >
       {/* ---------------- MOBILE NAVBAR ---------------- */}
-      <div className="flex lg:hidden items-center justify-between px-5 py-4">
-        <button type="button" aria-label="Open menu" className="cursor-pointer">
+      <div className="flex xl:hidden items-center justify-between px-4 sm:px-6 py-4">
+        <button
+          type="button"
+          onClick={() => setIsMobileMenuOpen(true)}
+          aria-label="Open menu"
+          className="cursor-pointer"
+        >
           <Menu className="w-5 h-5" />
         </button>
 
@@ -93,6 +102,9 @@ export default function Navbar({
           <button
             type="button"
             onClick={onOpenCart}
+            aria-label={`Open cart, ${cartCount} ${
+              cartCount === 1 ? "item" : "items"
+            }`}
             className="flex items-center gap-1.5 text-xs cursor-pointer"
           >
             <span
@@ -109,7 +121,7 @@ export default function Navbar({
       </div>
 
       {/* ---------------- DESKTOP 2-ROW NAVBAR ---------------- */}
-      <div className="hidden lg:block max-w-[1440px] mx-auto px-8">
+      <div className="hidden xl:block max-w-[1440px] mx-auto px-8">
         {/* ROW 1 */}
         <div className="grid grid-cols-3 items-center pt-4 pb-2 text-[13px]">
           <div className="flex items-center gap-6">
@@ -213,6 +225,73 @@ export default function Navbar({
         onClose={() => setActiveMenu(null)}
         onNavigate={handleCategoryNavigation}
       />
+
+      <Sheet
+        open={isMobileMenuOpen}
+        onOpenChange={(open) => {
+          setIsMobileMenuOpen(open);
+          if (!open) setMobileMenuCategory(null);
+        }}
+      >
+        <SheetContent
+          side="left"
+          showCloseButton
+          className="w-full sm:max-w-[400px] gap-0 rounded-none bg-[#FFFEF2] p-0 text-[#252525]"
+        >
+          <div className="border-b border-[#E2DDD2] px-6 py-5">
+            <SheetTitle className="font-serif text-2xl font-normal">
+              Lumora.
+            </SheetTitle>
+          </div>
+          <nav aria-label="Mobile navigation" className="flex-1 overflow-y-auto px-6 py-3">
+            {NAVIGATION_ITEMS.map((item) => {
+              const isExpanded = mobileMenuCategory === item.label;
+              return (
+                <div key={item.label} className="border-b border-[#E2DDD2]">
+                  <button
+                    type="button"
+                    onClick={() =>
+                      setMobileMenuCategory(isExpanded ? null : item.label)
+                    }
+                    aria-expanded={isExpanded}
+                    className="flex w-full items-center justify-between py-4 text-left text-[15px]"
+                  >
+                    {item.label}
+                    <span className="text-xl leading-none" aria-hidden="true">
+                      {isExpanded ? "−" : "+"}
+                    </span>
+                  </button>
+                  {isExpanded && (
+                    <ul className="space-y-3 pb-4 pl-3 text-[13px] text-[#57534E]">
+                      {item.categories.map((category) => (
+                        <li key={category}>
+                          <button
+                            type="button"
+                            onClick={() => handleCategoryNavigation(category)}
+                            className="text-left hover:text-[#252525]"
+                          >
+                            {category}
+                          </button>
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                </div>
+              );
+            })}
+            <button
+              type="button"
+              onClick={() => {
+                setIsMobileMenuOpen(false);
+                onOpenAuth();
+              }}
+              className="w-full py-4 text-left text-[15px]"
+            >
+              {user ? user.name : "Account"}
+            </button>
+          </nav>
+        </SheetContent>
+      </Sheet>
 
       {/* SEARCH OVERLAY PANEL */}
       <SearchPanel

@@ -74,7 +74,7 @@ export default function CategoryBrowser({ onSelectCategory }) {
             onClick={handleNext}
             disabled={startIndex >= maxIndex}
             aria-label="Next categories"
-            className="hidden md:flex absolute -right-8 top-[42%] -translate-y-1/2 z-10 p-2 text-[#252525] disabled:opacity-25 hover:opacity-70 transition-opacity cursor-pointer disabled:cursor-default"
+            className="hidden md:flex absolute -right-6 top-[42%] -translate-y-1/2 z-10 p-2 text-[#252525] disabled:opacity-25 hover:opacity-70 transition-opacity cursor-pointer disabled:cursor-default"
           >
             <ChevronRight className="w-5 h-5 stroke-[1.5]" />
           </button>

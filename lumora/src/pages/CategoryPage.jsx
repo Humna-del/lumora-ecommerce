@@ -18,14 +18,25 @@ export default function CategoryPage({
   const { slug = "all" } = useParams();
   const navigate = useNavigate();
 
-  const [filters, setFilters] = useState(DEFAULT_FILTERS);
+  const [filterState, setFilterState] = useState({
+    slug,
+    filters: DEFAULT_FILTERS,
+  });
+  const filters =
+    filterState.slug === slug ? filterState.filters : DEFAULT_FILTERS;
+  const setFilters = (nextFilters) => {
+    setFilterState({
+      slug,
+      filters:
+        typeof nextFilters === "function" ? nextFilters(filters) : nextFilters,
+    });
+  };
   const [sortBy, setSortBy] = useState("featured");
   const [isFilterOpen, setIsFilterOpen] = useState(false);
 
-  // Scroll to top & reset filters when switching category
+  // Scroll to top when switching category; filter state is keyed by slug.
   useEffect(() => {
     window.scrollTo(0, 0);
-    setFilters(DEFAULT_FILTERS);
   }, [slug]);
 
   const activeCategory = CATEGORIES.find((c) => c.slug === slug);
@@ -48,8 +59,8 @@ export default function CategoryPage({
   );
 
   return (
-    <main className="min-h-screen bg-[#FFFEF2] text-[#252525] py-10">
-      <div className="max-w-[1440px] mx-auto px-6 lg:px-12">
+    <main className="min-h-screen bg-[#FFFEF2] text-[#252525] py-6 sm:py-10">
+      <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-12">
         {/* Breadcrumb */}
         <nav className="text-[12px] text-[#66635B] mb-6 flex items-center gap-2">
           <Link to="/" className="hover:underline">
@@ -60,11 +71,11 @@ export default function CategoryPage({
         </nav>
 
         {/* Horizontal Category Chips */}
-        <div className="flex flex-wrap items-center gap-2.5 mb-8">
+        <div className="flex items-center gap-2.5 overflow-x-auto mb-7 pb-1">
           <button
             type="button"
             onClick={() => navigate("/category/all")}
-            className={`px-3.5 py-1.5 text-[12px] border transition-colors cursor-pointer ${
+            className={`shrink-0 px-3.5 py-2 text-[12px] border transition-colors cursor-pointer ${
               slug === "all"
                 ? "border-[#252525] font-medium"
                 : "border-[#D4CFC4] text-[#57534E] hover:border-[#252525]"
@@ -78,7 +89,7 @@ export default function CategoryPage({
               key={cat.id}
               type="button"
               onClick={() => navigate(`/category/${cat.slug}`)}
-              className={`px-3.5 py-1.5 text-[12px] border transition-colors cursor-pointer ${
+              className={`shrink-0 px-3.5 py-2 text-[12px] border transition-colors cursor-pointer ${
                 slug === cat.slug
                   ? "border-[#252525] font-medium"
                   : "border-[#D4CFC4] text-[#57534E] hover:border-[#252525]"
@@ -90,8 +101,8 @@ export default function CategoryPage({
         </div>
 
         {/* Toolbar: Category Title + All Filters | Product Count + Sort */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-5 mb-10 border-b border-[#E2DDD2]">
-          <div className="flex items-center gap-6">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-5 mb-8 sm:mb-10 border-b border-[#E2DDD2]">
+          <div className="flex flex-wrap items-center gap-4 sm:gap-6">
             <h1 className="font-serif text-2xl md:text-3xl font-normal">
               {categoryTitle}
             </h1>
@@ -106,7 +117,7 @@ export default function CategoryPage({
             </button>
           </div>
 
-          <div className="flex items-center gap-4 text-[13px]">
+          <div className="flex items-center justify-between md:justify-start gap-4 text-[13px]">
             <span className="text-[#66635B] pr-4 border-r border-[#D4CFC4]">
               {visibleProducts.length} products
             </span>
@@ -143,7 +154,7 @@ export default function CategoryPage({
             </button>
           </div>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-x-6 gap-y-14">
+          <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-x-3 sm:gap-x-6 gap-y-10 sm:gap-y-14">
             {visibleProducts.map((product) => (
               <ProductCard
                 key={product._id}

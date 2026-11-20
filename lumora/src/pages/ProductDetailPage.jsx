@@ -27,20 +27,46 @@ export default function ProductDetailPage({
     return [{ label: product.format || "Standard", price: product.price }];
   }, [product]);
 
-  const [activeImage, setActiveImage] = useState(0);
-  const [selectedVariantIdx, setSelectedVariantIdx] = useState(0);
-  const [purchaseType, setPurchaseType] = useState("one-time");
+  const [viewState, setViewState] = useState({
+    id,
+    activeImage: 0,
+    selectedVariantIdx: 0,
+    purchaseType: "one-time",
+    openFaq: null,
+  });
+  const currentViewState =
+    viewState.id === id
+      ? viewState
+      : {
+          id,
+          activeImage: 0,
+          selectedVariantIdx: 0,
+          purchaseType: "one-time",
+          openFaq: null,
+        };
+  const updateViewState = (key, value) => {
+    setViewState((previous) => {
+      const current =
+        previous.id === id
+          ? previous
+          : {
+              id,
+              activeImage: 0,
+              selectedVariantIdx: 0,
+              purchaseType: "one-time",
+              openFaq: null,
+            };
+      return { ...current, [key]: value };
+    });
+  };
   const [isBookmarked, setIsBookmarked] = useState(false);
-  const [openFaq, setOpenFaq] = useState(null);
 
   useEffect(() => {
     window.scrollTo(0, 0);
-    setActiveImage(0);
-    setSelectedVariantIdx(0);
-    setPurchaseType("one-time");
-    setOpenFaq(null);
   }, [id]);
 
+  const { activeImage, selectedVariantIdx, purchaseType, openFaq } =
+    currentViewState;
   const activeVariant = variants[selectedVariantIdx] || variants[0];
   const basePrice = activeVariant?.price ?? 0;
   const finalPrice =
@@ -100,10 +126,10 @@ export default function ProductDetailPage({
   }
 
   return (
-    <main className="min-h-screen bg-[#FFFEF2] text-[#252525] py-10">
-      <div className="max-w-[1440px] mx-auto px-6 lg:px-12">
+    <main className="min-h-screen bg-[#FFFEF2] text-[#252525] py-6 sm:py-10">
+      <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-12">
         {/* Breadcrumb */}
-        <nav className="text-[12px] text-[#66635B] mb-8 flex items-center gap-2">
+        <nav className="text-[12px] text-[#66635B] mb-6 sm:mb-8 flex flex-wrap items-center gap-2">
           <Link to="/" className="hover:underline">
             Home
           </Link>
@@ -116,7 +142,7 @@ export default function ProductDetailPage({
         </nav>
 
         {/* Top 2-Column Split: Gallery + Purchase Panel */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 pb-16">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 pb-12 sm:pb-16">
           {/* LEFT 7 COLS: Gallery + Thumbnails */}
           <div className="lg:col-span-7">
             <div className="flex items-center justify-between mb-3">
@@ -151,8 +177,8 @@ export default function ProductDetailPage({
                 <button
                   key={src + idx}
                   type="button"
-                  onClick={() => setActiveImage(idx)}
-                  className={`w-20 h-20 bg-[#F7F5EE] overflow-hidden border-2 cursor-pointer ${
+                  onClick={() => updateViewState("activeImage", idx)}
+                  className={`w-16 h-16 sm:w-20 sm:h-20 bg-[#F7F5EE] overflow-hidden border-2 cursor-pointer ${
                     activeImage === idx
                       ? "border-[#252525]"
                       : "border-transparent opacity-70 hover:opacity-100"
@@ -198,7 +224,7 @@ export default function ProductDetailPage({
                 <button
                   key={v.label}
                   type="button"
-                  onClick={() => setSelectedVariantIdx(idx)}
+                  onClick={() => updateViewState("selectedVariantIdx", idx)}
                   className={`border py-3 px-2 text-center transition-colors cursor-pointer ${
                     selectedVariantIdx === idx
                       ? "border-2 border-[#252525] font-medium"
@@ -220,7 +246,7 @@ export default function ProductDetailPage({
                   type="radio"
                   name="purchaseType"
                   checked={purchaseType === "one-time"}
-                  onChange={() => setPurchaseType("one-time")}
+                  onChange={() => updateViewState("purchaseType", "one-time")}
                   className="accent-[#252525]"
                 />
                 <span className="font-medium">One-time purchase</span>
@@ -232,7 +258,9 @@ export default function ProductDetailPage({
                     type="radio"
                     name="purchaseType"
                     checked={purchaseType === "subscription"}
-                    onChange={() => setPurchaseType("subscription")}
+                    onChange={() =>
+                      updateViewState("purchaseType", "subscription")
+                    }
                     className="accent-[#252525]"
                   />
                   <span>Replenishment subscription</span>
@@ -307,7 +335,7 @@ export default function ProductDetailPage({
           <Tabs defaultValue="description" className="w-full">
             <TabsList
               variant="line"
-              className="w-full justify-start gap-8 md:gap-16 border-b border-[#E2DDD2] rounded-none bg-transparent p-0 mb-8"
+              className="w-full justify-start gap-6 md:gap-16 overflow-x-auto border-b border-[#E2DDD2] rounded-none bg-transparent p-0 mb-8"
             >
               <TabsTrigger
                 value="description"
@@ -404,7 +432,9 @@ export default function ProductDetailPage({
                 <div key={item.q}>
                   <button
                     type="button"
-                    onClick={() => setOpenFaq(isOpen ? null : idx)}
+                    onClick={() =>
+                      updateViewState("openFaq", isOpen ? null : idx)
+                    }
                     className="flex items-center justify-between w-full py-4 text-left text-[14px] hover:opacity-75 cursor-pointer"
                   >
                     <span>{item.q}</span>

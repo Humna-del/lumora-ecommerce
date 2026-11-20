@@ -1,6 +1,10 @@
 import dns from "node:dns";
 import mongoose from "mongoose";
 
+if (!process.env.VERCEL) {
+  dns.setServers(["8.8.8.8", "1.1.1.1"]);
+}
+
 const resolveDnsOverHttps = async (name, type) => {
   const url = new URL("https://cloudflare-dns.com/dns-query");
   url.searchParams.set("name", name);

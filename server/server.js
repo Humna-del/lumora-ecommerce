@@ -1,6 +1,4 @@
 import express from "express";
-// Trust Render's reverse proxy (required for express-rate-limit & secure cookies)
-app.set("trust proxy", 1);
 import dotenv from "dotenv";
 import helmet from "helmet";
 import cors from "cors";
@@ -14,9 +12,11 @@ import orderRoutes from "./routes/orderRoutes.js";
 import subscriberRoutes from "./routes/subscriberRoutes.js";
 
 dotenv.config();
-connectDB();
 
 const app = express();
+// Trust Render's reverse proxy (required for express-rate-limit & secure cookies)
+app.set("trust proxy", 1);
+connectDB();
 
 // 1. Security HTTP Headers
 app.use(helmet());
@@ -59,7 +59,11 @@ app.use("/api/subscribers", subscriberRoutes);
 app.use(notFound);
 app.use(errorHandler);
 
-const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => {
-  console.log(`Server running in ${process.env.NODE_ENV} mode on port ${PORT}`);
-});
+if (!process.env.VERCEL) {
+  const PORT = process.env.PORT || 5000;
+  app.listen(PORT, () => {
+    console.log(`Server running in ${process.env.NODE_ENV} mode on port ${PORT}`);
+  });
+}
+
+export default app;
